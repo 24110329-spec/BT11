@@ -1,0 +1,14 @@
+package vn.ute.library.controller;
+import jakarta.servlet.*; import jakarta.servlet.http.*; import jakarta.servlet.annotation.*; import java.io.IOException; import java.security.SecureRandom; import vn.ute.library.model.*; import vn.ute.library.service.*; import vn.ute.library.service.impl.*; import vn.ute.library.util.*;
+@WebServlet("/auth")
+public class AuthController_24110329 extends HttpServlet {
+ private final UserService_24110329 service=new UserServiceImpl_24110329(); private final SecureRandom random=new SecureRandom();
+ protected void doGet(HttpServletRequest r,HttpServletResponse p)throws ServletException,IOException{String a=r.getParameter("action");if("logout".equals(a)){r.getSession().invalidate();p.sendRedirect(r.getContextPath()+"/auth?action=login");return;}r.getRequestDispatcher("/WEB-INF/views/"+("register".equals(a)?"register":"login")+".jsp").forward(r,p);}
+ protected void doPost(HttpServletRequest r,HttpServletResponse p)throws ServletException,IOException{
+  r.setCharacterEncoding("UTF-8");String a=r.getParameter("action");
+  if("sendOtp".equals(a)){String email=r.getParameter("email"),otp=String.format("%06d",random.nextInt(1000000));r.getSession().setAttribute("otp",otp);r.getSession().setAttribute("otpEmail",email);r.getSession().setAttribute("otpTime",System.currentTimeMillis());EmailUtil_24110329.sendOtp(email,otp);r.setAttribute("message","OTP đã được gửi. Nếu test local chưa cấu hình mail, xem OTP trong console.");r.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(r,p);return;}
+  if("register".equals(a)){String otp=r.getParameter("otp"),saved=(String)r.getSession().getAttribute("otp");Long t=(Long)r.getSession().getAttribute("otpTime");String otpEmail=(String)r.getSession().getAttribute("otpEmail");
+  if(saved==null||t==null||otpEmail==null||System.currentTimeMillis()-t>300000||!saved.equals(otp)||!otpEmail.equalsIgnoreCase(r.getParameter("email"))){r.setAttribute("error","OTP không hợp lệ hoặc đã hết hạn.");r.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(r,p);return;}User_24110329 u=new User_24110329();u.setEmail(r.getParameter("email"));u.setFullName(r.getParameter("fullName"));u.setPhone(r.getParameter("phone"));u.setPasswd(r.getParameter("password"));if(service.register(u)){r.getSession().removeAttribute("otp");p.sendRedirect(r.getContextPath()+"/auth?action=login&registered=1");}else{r.setAttribute("error","Email đã tồn tại.");r.getRequestDispatcher("/WEB-INF/views/register.jsp").forward(r,p);}return;}
+  User_24110329 u=service.login(r.getParameter("email"),r.getParameter("password"));if(u==null){r.setAttribute("error","Email hoặc mật khẩu không đúng.");r.getRequestDispatcher("/WEB-INF/views/login.jsp").forward(r,p);return;}r.getSession().setAttribute("user",u);if(u.isIs_admin())p.sendRedirect(r.getContextPath()+"/admin/books");else p.sendRedirect(r.getContextPath()+"/books");
+ }
+}

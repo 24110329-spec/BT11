@@ -1,0 +1,8 @@
+<decorators defaultdir="/WEB-INF/decorators">
+
+    <decorator name="user"
+               page="user.jsp">
+        ...
+    </decorator>
+
+</decorators>

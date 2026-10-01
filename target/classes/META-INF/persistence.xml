@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
+    <persistence-unit name="LibraryPU" transaction-type="RESOURCE_LOCAL">
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>vn.ute.library.model.User_24110329</class>
+        <class>vn.ute.library.model.Author_24110329</class>
+        <class>vn.ute.library.model.Book_24110329</class>
+        <class>vn.ute.library.model.Rating_24110329</class>
+        <class>vn.ute.library.model.Order_24110329</class>
+        <class>vn.ute.library.model.OrderItem_24110329</class>
+        <properties>
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+            <property name="jakarta.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/library_exam_24110329?useSSL=false&amp;serverTimezone=Asia/Ho_Chi_Minh&amp;characterEncoding=UTF-8"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="12345"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+            <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.show_sql" value="false"/>
+        </properties>
+    </persistence-unit>
+</persistence>
